@@ -5,8 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle } from 'lucide-react'
 import Board from './board'
 import Dice from './dice'
 import { soundManager } from './utils/sound'
@@ -47,31 +45,17 @@ export default function Game() {
   const [message, setMessage] = useState('')
   const [isMoving, setIsMoving] = useState(false)
   const [soundEnabled, setSoundEnabled] = useState(true)
-  const [soundErrors, setSoundErrors] = useState<string[]>([])
 
   useEffect(() => {
     const loadSounds = async () => {
-      const soundFiles = [
-        { name: 'roll', url: '/sounds/dice-roll.mp3' },
-        { name: 'move', url: '/sounds/move.mp3' },
-        { name: 'ladder', url: '/sounds/ladder.mp3' },
-        { name: 'snake', url: '/sounds/snake.mp3' },
-        { name: 'win', url: '/sounds/win.mp3' },
-      ]
-
-      const errors: string[] = []
-
-      for (const sound of soundFiles) {
-        try {
-          await soundManager.loadSound(sound.name, sound.url)
-        } catch (error) {
-          console.error(`Failed to load sound ${sound.name}:`, error)
-          errors.push(`Failed to load ${sound.name} sound. Please check if the file exists and is accessible.`)
-        }
-      }
-
-      if (errors.length > 0) {
-        setSoundErrors(errors)
+      try {
+        await soundManager.loadSound('roll', '/sounds/dice-roll.mp3')
+        await soundManager.loadSound('move', '/sounds/move.mp3')
+        await soundManager.loadSound('ladder', '/sounds/ladder.mp3')
+        await soundManager.loadSound('snake', '/sounds/snake.mp3')
+        await soundManager.loadSound('win', '/sounds/win.mp3')
+      } catch (error) {
+        console.error("Failed to load sounds:", error)
         setSoundEnabled(false)
       }
     }
@@ -87,9 +71,7 @@ export default function Game() {
     if (gameOver || player !== currentPlayer || isMoving) return
     const newDiceValue = Math.floor(Math.random() * 6) + 1
     setDiceValue(newDiceValue)
-    if (soundEnabled) {
-      soundManager.playSound('roll')
-    }
+    soundManager.playSound('roll')
     movePlayer(newDiceValue)
   }
 
@@ -105,9 +87,7 @@ export default function Game() {
       } else {
         setPlayer2Position(newPosition)
       }
-      if (soundEnabled) {
-        soundManager.playSound('move')
-      }
+      soundManager.playSound('move')
       await new Promise(resolve => setTimeout(resolve, 300))
     }
 
@@ -116,14 +96,10 @@ export default function Game() {
       const finalPosition = snakesAndLadders[newPosition]
       if (newPosition in ladders) {
         setMessage(`${currentPlayer === 1 ? 'Player 1' : 'Player 2'} climbed a ladder!`)
-        if (soundEnabled) {
-          soundManager.playSound('ladder')
-        }
+        soundManager.playSound('ladder')
       } else {
         setMessage(`${currentPlayer === 1 ? 'Player 1' : 'Player 2'} hit a snake!`)
-        if (soundEnabled) {
-          soundManager.playSound('snake')
-        }
+        soundManager.playSound('snake')
       }
       if (currentPlayer === 1) {
         setPlayer1Position(finalPosition)
@@ -138,9 +114,7 @@ export default function Game() {
     if (newPosition >= 100) {
       setGameOver(true)
       setMessage(`Player ${currentPlayer} wins!`)
-      if (soundEnabled) {
-        soundManager.playSound('win')
-      }
+      soundManager.playSound('win')
     } else {
       setCurrentPlayer(currentPlayer === 1 ? 2 : 1)
     }
@@ -163,19 +137,6 @@ export default function Game() {
       <Card className="mb-8">
         <CardContent className="p-6">
           <h1 className="text-3xl font-bold mb-4 text-center">Snake and Ladder</h1>
-          {soundErrors.length > 0 && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Sound Loading Errors</AlertTitle>
-              <AlertDescription>
-                <ul className="list-disc pl-5">
-                  {soundErrors.map((error, index) => (
-                    <li key={index}>{error}</li>
-                  ))}
-                </ul>
-              </AlertDescription>
-            </Alert>
-          )}
           <div className="flex flex-col md:flex-row gap-8">
             <div className="flex-1">
               <Board 
@@ -228,7 +189,6 @@ export default function Game() {
                     id="sound-toggle"
                     checked={soundEnabled}
                     onCheckedChange={setSoundEnabled}
-                    disabled={soundErrors.length > 0}
                   />
                 </div>
               </div>

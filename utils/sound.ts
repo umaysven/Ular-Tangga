@@ -21,15 +21,11 @@ class SoundManager {
 
     try {
       const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
       const arrayBuffer = await response.arrayBuffer();
       const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
       this.sounds[name] = audioBuffer;
     } catch (error) {
       console.error(`Failed to load sound ${name}:`, error);
-      throw error; // Re-throw the error to be caught in the game component
     }
   }
 
