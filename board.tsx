@@ -116,7 +116,7 @@ export default function Board({ player1Position, player2Position, ladders, snake
   }
 
   return (
-    <div className="relative">
+    <div className="relative" style={{ minWidth: '490px', maxWidth: '490px'}}>
       <div className="border-4 border-gray-400 rounded-lg overflow-hidden">{rows}</div>
       <svg className="absolute top-0 left-0 w-full h-full pointer-events-none">
         {renderLadders()}
