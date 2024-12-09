@@ -79,6 +79,7 @@ export default function Game() {
     setIsMoving(true)
     const currentPosition = currentPlayer === 1 ? player1Position : player2Position
     let newPosition = currentPosition
+    await new Promise(resolve => setTimeout(resolve, 500));
 
     for (let i = 1; i <= spaces; i++) {
       newPosition++

@@ -20,22 +20,27 @@ export default function Board({ player1Position, player2Position, ladders, snake
     return (
       <div key={i} className={`w-12 h-12 border border-gray-300 flex items-center justify-center relative ${bgColor}`}>
         <div className="text-xs font-semibold">{i}</div>
-        {isPlayer1Here && (
-          <motion.div
-            className="absolute w-4 h-4 bg-blue-500 rounded-full border-2 border-white"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 500, damping: 30 }}
-          />
-        )}
-        {isPlayer2Here && (
-          <motion.div
-            className="absolute w-4 h-4 bg-red-500 rounded-full border-2 border-white"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 500, damping: 30 }}
-          />
-        )}
+          {isPlayer1Here && (
+            <motion.img
+              src="images/p1.png"
+              alt="Player 1"
+              className="absolute w-8 h-8"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            />
+          )}
+
+          {isPlayer2Here && (
+            <motion.img
+              src="images/p2.png"
+              alt="Player 2"
+              className="absolute w-8 h-8"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            />
+          )}
       </div>
     )
   }
